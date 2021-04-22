@@ -124,6 +124,9 @@ type ACMEOptions struct {
 
 	// DNS01CheckRetryPeriod is the time the controller should wait between checking if a ACME dns entry exists.
 	DNS01CheckRetryPeriod time.Duration
+
+	// DNS01CheckMaxRetries is the number of retries the controller should wait for DNS to replicate, before restarting the challenge
+	DNS01CheckMaxRetries int
 }
 
 type IngressShimOptions struct {

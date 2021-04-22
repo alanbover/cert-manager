@@ -191,6 +191,11 @@ func (c *controller) Sync(ctx context.Context, ch *cmacme.Challenge) (err error)
 			return err
 		}
 
+		// We have reached the maximum number of check retries, so we delete the challenge and start over
+		if (c.DNS01CheckMaxRetries > 0) && (c.queue.NumRequeues(key) > c.DNS01CheckMaxRetries) {
+			c.cmClient.AcmeV1().Challenges(ch.Namespace).Delete(ctx, ch.Name, metav1.DeleteOptions{})
+			return nil
+		}
 		c.queue.AddAfter(key, c.DNS01CheckRetryPeriod)
 
 		return nil

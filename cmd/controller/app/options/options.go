@@ -97,6 +97,7 @@ type ControllerOptions struct {
 	EnablePprof bool
 
 	DNS01CheckRetryPeriod time.Duration
+	DNS01CheckMaxRetries  int
 }
 
 const (
@@ -129,6 +130,8 @@ const (
 	defaultPrometheusMetricsServerAddress = "0.0.0.0:9402"
 
 	defaultDNS01CheckRetryPeriod = 10 * time.Second
+
+	defaultDNS01CheckMaxRetries = 0
 )
 
 var (
@@ -290,6 +293,10 @@ func (s *ControllerOptions) AddFlags(fs *pflag.FlagSet) {
 	fs.DurationVar(&s.DNS01CheckRetryPeriod, "dns01-check-retry-period", defaultDNS01CheckRetryPeriod, ""+
 		"The duration the controller should wait between checking if a ACME dns entry exists."+
 		"This should be a valid duration string, for example 180s or 1h")
+
+	fs.IntVar(&s.DNS01CheckMaxRetries, "dns01-check-max-retries", defaultDNS01CheckMaxRetries, ""+
+		"The number of retries the controller should wait before restarting the challenge."+
+		"Set to 0 for no limit")
 
 	fs.StringVar(&s.MetricsListenAddress, "metrics-listen-address", defaultPrometheusMetricsServerAddress, ""+
 		"The host and port that the metrics endpoint should listen on.")
